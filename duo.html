@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="shortcut icon" type="image/x-icon" href="">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.2.7/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+            color: rgb(0, 255, 217);
+            stroke-width: 10px;
+            justify-content: center;
+            align-items: center;
+            
+            /*-webkit-text-stroke: 2px rgb(255, 255, 255);  Webkit-based browsers like Chrome */
+
+
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 34px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: #ffffff30;
+            border-radius: 2px;
+            border: 1px solid rgb(242, 255, 0);
+
+        }
+
+        .cell:hover {
+            background-color: rgba(0, 0, 0, 0.422);
+        }
+
+        body {
+            text-align: center;
+            padding-top: 10%;
+
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-900">
+    <h1 class="text-purple-400 text-4xl lg:text-6xl dark:text-purple-500 py-4 lg:py-4 font-semibold leading-normal">Tic
+        Tac Toe</h1>
+    <div class="board " id="board"></div>
+    <div id="result" class="py-4 px-4 text-2xl text-yellow-300"></div>
+    <button id="restart"
+        class="mx-auto flex relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
+        <span
+            class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            X--RESTART--O
+        </span>
+    </button>
+
+    <script>
+        const board = document.getElementById("board");
+        const result = document.getElementById("result");
+        const restartButton = document.getElementById("restart");
+        const cells = Array.from({ length: 9 });
+
+        let currentPlayer = "X";
+        let gameBoard = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+
+        function handleCellClick(index) {
+            if (!gameActive || gameBoard[index] !== "") return;
+
+            gameBoard[index] = currentPlayer;
+            cells[index].textContent = currentPlayer;
+            cells[index].classList.add("clicked");
+
+            if (checkWin()) {
+                result.textContent = `${currentPlayer} wins!`;
+                gameActive = false;
+            } else if (!gameBoard.includes("")) {
+                result.textContent = "It's a draw!";
+                gameActive = false;
+            } else {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+            }
+        }
+
+        function checkWin() {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (
+                    gameBoard[a] &&
+                    gameBoard[a] === gameBoard[b] &&
+                    gameBoard[a] === gameBoard[c]
+                ) {
+                    cells[a].classList.add("win-cell");
+                    cells[b].classList.add("win-cell");
+                    cells[c].classList.add("win-cell");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function restartGame() {
+            gameBoard = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = "X";
+            gameActive = true;
+            result.textContent = "";
+            cells.forEach((cell) => {
+                cell.textContent = "";
+                cell.classList.remove("clicked", "win-cell");
+            });
+        }
+
+        restartButton.addEventListener("click", restartGame);
+
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.addEventListener("click", () => handleCellClick(i));
+            board.appendChild(cell);
+            cells[i] = cell;
+        }
+    </script>
+</body>
+<footer>
+    <h4 class="text-white py-4"> Designed with &#10084;	By <a href=""> Rj Design's </a> &copy; 2023</h4>
+</footer>
+</html>
